@@ -116,17 +116,17 @@ if uploaded_file is not None:
             st.dataframe(df_ranking, hide_index = True, 
                      column_config={
                         df.columns[3]: st.column_config.NumberColumn(
-                            df.columns[3],
-                            format="localized")
-                    })
+                            df.columns[3]
+                            # ,format="localized"
+                            )})
         with col2:
             df_rena = df_ranking[df_ranking["Corretora"] == "RENASCENCA"]
             st.dataframe(df_rena, hide_index = True, 
                      column_config={
                         df.columns[3]: st.column_config.NumberColumn(
-                            df.columns[3],
-                            format="localized")
-                    })
+                            df.columns[3]
+                            # ,format="localized"
+                        )})
             chart = alt.Chart(df_ranking).mark_arc().encode(
                 theta=alt.Theta("Share %:Q", stack=True),
                 color=alt.Color(
@@ -175,9 +175,9 @@ if uploaded_file is not None:
             st.dataframe(df_ranking_ativo, hide_index = True, 
                      column_config={
                         "Nº Contratos": st.column_config.NumberColumn(
-                            "Nº Contratos",
-                            format="localized")
-                    })   
+                            "Nº Contratos"
+                            # ,format="localized"
+                    )})   
         
         df = processar_planilha(uploaded_file)
         df_corretoras = df[(df["Ativo"] != "BM&F TOTAL") & (df["Ativo"] != "BOVESPA TOTAL")]
@@ -186,26 +186,40 @@ if uploaded_file is not None:
         df_corretoras['Share %'] = df_corretoras['Nº Contratos'] / df_corretoras['Total Contratos por Ativo'] * 100
         df_corretoras['Posição'] = df_corretoras.groupby("Ativo")["Nº Contratos"].rank(method='dense', ascending=False).astype(int)
         df_corretoras['Share %'] = df_corretoras['Share %'].round(2)
-        
         df_corretoras = df_corretoras[["Posição","Corretora", "Ativo", "Nº Contratos", "Share %"]]
-
-        # Ordenar para melhor visualização
         df_corretoras = df_corretoras.sort_values(['Ativo', 'Nº Contratos'], ascending=[True, False])
-
+        df_corretoras2 = df_corretoras.copy()
+        
         corretora = st.selectbox("Selecione a Corretora", ["Todas"]+df["Corretora"].unique().tolist())
         if corretora != "Todas":
-            df_corretoras = df_corretoras[df_corretoras["Corretora"] == corretora]
+            df_corretoras_filtrado = df_corretoras[df_corretoras["Corretora"] == corretora]
         
-        st.dataframe(df_corretoras.sort_values(by="Nº Contratos", ascending=False), hide_index=True, 
+        # df_corretoras_filtrado = df_corretoras
+        st.dataframe(df_corretoras_filtrado.sort_values(by="Nº Contratos", ascending=False), hide_index=True, 
                      column_config={
                         "Nº Contratos": st.column_config.NumberColumn(
-                            "Nº Contratos",
-                            format="localized")
-                    })
-    
-    
-    
-    
+                            "Nº Contratos"
+                            # ,format="localized"
+                    )})
+        
+        
+        df3 = pd.pivot_table(
+            df_corretoras2,
+            values=['Share %'],
+            index=["Ativo"],
+            columns=["Corretora"],   
+            aggfunc="sum",
+            fill_value=0
+        )
+        
+        corretoras_selecionadas = st.multiselect("Selecione as corretoras", df_corretoras2["Corretora"].unique(), default=df_corretoras2["Corretora"].unique())
+
+        df3_filtrado = df3.loc[:, df3.columns.get_level_values(1).isin(corretoras_selecionadas)]
+        # df3_filtrado = df3[corretoras_selecionadas]
+
+        # df3_filtrado = df3_filtrado.reset_index()
+        
+        st.dataframe(df3_filtrado)
     
     # df_contratos_mercado = df.groupby(["Ativo"])["Nº Contratos"].sum().reset_index()
     # df_bovespa_total = df.groupby(["Ativo"])["Valor Financeiro"].sum().reset_index()
