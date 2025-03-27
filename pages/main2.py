@@ -42,6 +42,7 @@ def processar_planilha(uploaded_file):
     df = pd.concat([pd.concat(dfs_dict[key], ignore_index=True) for key in dfs_dict], ignore_index=True)
     df = df.dropna(subset=["Corretora"])
     
+    df = df[(df["Ativo"] != "mini DOL") & (df["Ativo"] != "mini IND")]
     # df = df[df["Ativo"] != "BM&F TOTAL"]
     df["Número do Mês"] = df["Número do Mês"].astype(str)
     df = df[["Ativo", "Posição", "Corretora", "Nº Contratos", "Share %", "Valor Financeiro", "Ano", "Número do Mês"]]
@@ -81,8 +82,8 @@ if uploaded_file is not None:
             y=alt.Y(df_mercado.columns[1])
             ,tooltip=[alt.Tooltip(df_mercado.columns[1], format=',.2f')]
         ).properties(
-            height=400,
-            width=800,
+            # height=400,
+            # width=800,
             title=f"{df_mercado.columns[1]} por Mês"
         )
         text = chart.mark_text(
