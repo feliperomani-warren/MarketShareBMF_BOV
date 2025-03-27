@@ -196,7 +196,8 @@ if uploaded_file is not None:
         st.dataframe(df_corretoras.sort_values(by="Nº Contratos", ascending=False), hide_index=True, 
                      column_config={
                         "Nº Contratos": st.column_config.NumberColumn(
-                            "Nº Contratos")
+                            "Nº Contratos",
+                            format="localized")
                     })
     
     
