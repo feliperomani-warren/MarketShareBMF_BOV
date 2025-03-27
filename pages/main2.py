@@ -103,12 +103,12 @@ if uploaded_file is not None:
         df_ativos = df.groupby(["Ativo"])[df.columns[3]].sum().reset_index().sort_values(by=df.columns[3], ascending=False)
         total_mercado2 = df_ativos[df.columns[3]].sum()
         df_ativos["Share %"] = round(((df_ativos[df.columns[3]])/(total_mercado2)*100),2)
-        st.dataframe(df_ativos, 
-                     column_config={
-                        df.columns[3]: st.column_config.NumberColumn(
-                            df.columns[3]
-                            ,format="localized"
-                            )})
+        # st.dataframe(df_ativos, 
+        #              column_config={
+        #                 df.columns[3]: st.column_config.NumberColumn(
+        #                     df.columns[3]
+        #                     ,format="localized"
+        #                     )}, hide_index=True)
 
     with col2:
         mes = st.selectbox("Selecione o Mês", ["Todos"]+df_ranking["Número do Mês"].unique().tolist(), key="mes")
