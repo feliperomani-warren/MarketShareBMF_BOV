@@ -212,7 +212,7 @@ if uploaded_file is not None:
             fill_value=0
         )
         
-        corretoras_selecionadas = st.multiselect("Selecione as corretoras", df_corretoras2["Corretora"].unique(), default=df_corretoras2[df_corretoras2["Corretora"]=="RENASCENCA"])
+        corretoras_selecionadas = st.multiselect("Selecione as corretoras", df_corretoras2["Corretora"].unique(), default=["RENASCENCA"])
 
         df3_filtrado = df3.loc[:, df3.columns.get_level_values(1).isin(corretoras_selecionadas)]
         
