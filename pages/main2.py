@@ -116,14 +116,16 @@ if uploaded_file is not None:
             st.dataframe(df_ranking, hide_index = True, 
                      column_config={
                         df.columns[3]: st.column_config.NumberColumn(
-                            df.columns[3])
+                            df.columns[3],
+                            format="localized")
                     })
         with col2:
             df_rena = df_ranking[df_ranking["Corretora"] == "RENASCENCA"]
             st.dataframe(df_rena, hide_index = True, 
                      column_config={
                         df.columns[3]: st.column_config.NumberColumn(
-                            df.columns[3])
+                            df.columns[3],
+                            format="localized")
                     })
             chart = alt.Chart(df_ranking).mark_arc().encode(
                 theta=alt.Theta("Share %:Q", stack=True),
@@ -173,7 +175,8 @@ if uploaded_file is not None:
             st.dataframe(df_ranking_ativo, hide_index = True, 
                      column_config={
                         "Nº Contratos": st.column_config.NumberColumn(
-                            "Nº Contratos")
+                            "Nº Contratos",
+                            format="localized")
                     })   
         
         df = processar_planilha(uploaded_file)
