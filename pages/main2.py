@@ -192,10 +192,10 @@ if uploaded_file is not None:
         
         corretora = st.selectbox("Selecione a Corretora", ["Todas"]+df["Corretora"].unique().tolist())
         if corretora != "Todas":
-            df_corretoras_filtrado = df_corretoras[df_corretoras["Corretora"] == corretora]
+            df_corretoras = df_corretoras[df_corretoras["Corretora"] == corretora]
         
         # df_corretoras_filtrado = df_corretoras
-        st.dataframe(df_corretoras_filtrado.sort_values(by="Nº Contratos", ascending=False), hide_index=True, 
+        st.dataframe(df_corretoras.sort_values(by="Nº Contratos", ascending=False), hide_index=True, 
                      column_config={
                         "Nº Contratos": st.column_config.NumberColumn(
                             "Nº Contratos"
