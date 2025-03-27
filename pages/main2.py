@@ -93,12 +93,22 @@ if uploaded_file is not None:
             dy=-5   
         ).encode(
             text=alt.Text(df_mercado.columns[1], format=',.2f'),
-            color=alt.value('white')
+            color=alt.value('black')
         )
         final_chart = (chart.encode(
             y=alt.Y(df_mercado.columns[1], sort='-x', axis=None)
         ) + text)
-        st.altair_chart(final_chart, use_container_width=True)    
+        st.altair_chart(final_chart, use_container_width=True)
+        
+        df_ativos = df.groupby(["Ativo"])[df.columns[3]].sum().reset_index().sort_values(by=df.columns[3], ascending=False)
+        total_mercado2 = df_ativos[df.columns[3]].sum()
+        df_ativos["Share %"] = round(((df_ativos[df.columns[3]])/(total_mercado2)*100),2)
+        st.dataframe(df_ativos, 
+                     column_config={
+                        df.columns[3]: st.column_config.NumberColumn(
+                            df.columns[3]
+                            ,format="localized"
+                            )})
 
     with col2:
         mes = st.selectbox("Selecione o Mês", ["Todos"]+df_ranking["Número do Mês"].unique().tolist(), key="mes")
