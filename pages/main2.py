@@ -140,9 +140,9 @@ if uploaded_file is not None:
             df = df[df["Ativo"] == ativo]
     
         with col2:
-            corretora = st.selectbox("Selecione a Corretora", ["Todas"]+df["Corretora"].unique().tolist())
-            if corretora != "Todas":
-                df = df[df["Corretora"] == corretora]
+            # corretora = st.selectbox("Selecione a Corretora", ["Todas"]+df["Corretora"].unique().tolist())
+            # if corretora != "Todas":
+            #     df = df[df["Corretora"] == corretora]
             mes1 = st.selectbox("Selecione o Mês", ["Todos"]+df["Número do Mês"].unique().tolist(), key="mes1")     
             if mes1 != "Todos":
                 df = df[df["Número do Mês"] == mes1]
@@ -167,8 +167,24 @@ if uploaded_file is not None:
             df_ranking_ativo = df_ranking_ativo[['Posição', 'Corretora','Nº Contratos', "Share %"]].sort_values(by="Posição", ascending=True)
             st.dataframe(df_ranking_ativo, hide_index = True)   
         
+        df = processar_planilha(uploaded_file)
+        df_corretoras = df[(df["Ativo"] != "BM&F TOTAL") & (df["Ativo"] != "BOVESPA TOTAL")]
+        df_corretoras = df_corretoras.groupby(["Corretora", "Ativo"])["Nº Contratos"].sum().reset_index()
+        df_corretoras['Total Contratos por Ativo'] = df_corretoras.groupby("Ativo")["Nº Contratos"].transform('sum')
+        df_corretoras['Share %'] = df_corretoras['Nº Contratos'] / df_corretoras['Total Contratos por Ativo'] * 100
+        df_corretoras['Posição'] = df_corretoras.groupby("Ativo")["Nº Contratos"].rank(method='dense', ascending=False).astype(int)
+        df_corretoras['Share %'] = df_corretoras['Share %'].round(2)
         
-        st.dataframe(df.sort_values(by='Número do Mês', ascending=True), hide_index=True)
+        df_corretoras = df_corretoras[["Posição","Corretora", "Ativo", "Nº Contratos", "Share %"]]
+
+        # Ordenar para melhor visualização
+        df_corretoras = df_corretoras.sort_values(['Ativo', 'Nº Contratos'], ascending=[True, False])
+
+        corretora = st.selectbox("Selecione a Corretora", ["Todas"]+df["Corretora"].unique().tolist())
+        if corretora != "Todas":
+            df_corretoras = df_corretoras[df_corretoras["Corretora"] == corretora]
+        
+        st.dataframe(df_corretoras.sort_values(by="Nº Contratos", ascending=False), hide_index=True)
     
     
     
