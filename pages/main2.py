@@ -113,10 +113,18 @@ if uploaded_file is not None:
             df_ranking["Share %"] = round(((df_ranking[df.columns[3]])/(total_mercado)*100),2)
             df_ranking = df_ranking[["Posição", "Corretora", df.columns[3], "Share %"]]
             df_ranking = df_ranking.sort_values('Share %', ascending=False)
-            st.dataframe(df_ranking, hide_index = True)
+            st.dataframe(df_ranking, hide_index = True, 
+                     column_config={
+                        df.columns[3]: st.column_config.NumberColumn(
+                            df.columns[3])
+                    })
         with col2:
             df_rena = df_ranking[df_ranking["Corretora"] == "RENASCENCA"]
-            st.dataframe(df_rena, hide_index = True)
+            st.dataframe(df_rena, hide_index = True, 
+                     column_config={
+                        df.columns[3]: st.column_config.NumberColumn(
+                            df.columns[3])
+                    })
             chart = alt.Chart(df_ranking).mark_arc().encode(
                 theta=alt.Theta("Share %:Q", stack=True),
                 color=alt.Color(
@@ -140,9 +148,6 @@ if uploaded_file is not None:
             df = df[df["Ativo"] == ativo]
     
         with col2:
-            # corretora = st.selectbox("Selecione a Corretora", ["Todas"]+df["Corretora"].unique().tolist())
-            # if corretora != "Todas":
-            #     df = df[df["Corretora"] == corretora]
             mes1 = st.selectbox("Selecione o Mês", ["Todos"]+df["Número do Mês"].unique().tolist(), key="mes1")     
             if mes1 != "Todos":
                 df = df[df["Número do Mês"] == mes1]
@@ -165,7 +170,11 @@ if uploaded_file is not None:
             total_mercado_ativo = df_ranking_ativo["Nº Contratos"].sum()
             df_ranking_ativo["Share %"] = round(((df_ranking_ativo["Nº Contratos"])/(total_mercado_ativo)*100),2)
             df_ranking_ativo = df_ranking_ativo[['Posição', 'Corretora','Nº Contratos', "Share %"]].sort_values(by="Posição", ascending=True)
-            st.dataframe(df_ranking_ativo, hide_index = True)   
+            st.dataframe(df_ranking_ativo, hide_index = True, 
+                     column_config={
+                        "Nº Contratos": st.column_config.NumberColumn(
+                            "Nº Contratos")
+                    })   
         
         df = processar_planilha(uploaded_file)
         df_corretoras = df[(df["Ativo"] != "BM&F TOTAL") & (df["Ativo"] != "BOVESPA TOTAL")]
@@ -184,7 +193,11 @@ if uploaded_file is not None:
         if corretora != "Todas":
             df_corretoras = df_corretoras[df_corretoras["Corretora"] == corretora]
         
-        st.dataframe(df_corretoras.sort_values(by="Nº Contratos", ascending=False), hide_index=True)
+        st.dataframe(df_corretoras.sort_values(by="Nº Contratos", ascending=False), hide_index=True, 
+                     column_config={
+                        "Nº Contratos": st.column_config.NumberColumn(
+                            "Nº Contratos")
+                    })
     
     
     
