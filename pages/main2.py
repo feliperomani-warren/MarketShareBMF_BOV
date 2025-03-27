@@ -117,7 +117,7 @@ if uploaded_file is not None:
                      column_config={
                         df.columns[3]: st.column_config.NumberColumn(
                             df.columns[3]
-                            # ,format="localized"
+                            ,format="localized"
                             )})
         with col2:
             df_rena = df_ranking[df_ranking["Corretora"] == "RENASCENCA"]
@@ -125,7 +125,7 @@ if uploaded_file is not None:
                      column_config={
                         df.columns[3]: st.column_config.NumberColumn(
                             df.columns[3]
-                            # ,format="localized"
+                            ,format="localized"
                         )})
             chart = alt.Chart(df_ranking).mark_arc().encode(
                 theta=alt.Theta("Share %:Q", stack=True),
@@ -176,7 +176,7 @@ if uploaded_file is not None:
                      column_config={
                         "Nº Contratos": st.column_config.NumberColumn(
                             "Nº Contratos"
-                            # ,format="localized"
+                            ,format="localized"
                     )})   
         
         df = processar_planilha(uploaded_file)
@@ -199,7 +199,7 @@ if uploaded_file is not None:
                      column_config={
                         "Nº Contratos": st.column_config.NumberColumn(
                             "Nº Contratos"
-                            # ,format="localized"
+                            ,format="localized"
                     )})
         
         
@@ -215,9 +215,6 @@ if uploaded_file is not None:
         corretoras_selecionadas = st.multiselect("Selecione as corretoras", df_corretoras2["Corretora"].unique(), default=df_corretoras2["Corretora"].unique())
 
         df3_filtrado = df3.loc[:, df3.columns.get_level_values(1).isin(corretoras_selecionadas)]
-        # df3_filtrado = df3[corretoras_selecionadas]
-
-        # df3_filtrado = df3_filtrado.reset_index()
         
         st.dataframe(df3_filtrado)
     
