@@ -216,7 +216,7 @@ if uploaded_file is not None:
 
         df3_filtrado = df3.loc[:, df3.columns.get_level_values(1).isin(corretoras_selecionadas)]
         
-        st.dataframe(df3_filtrado)
+        st.dataframe(df3_filtrado,use_container_width = False)
     
     # df_contratos_mercado = df.groupby(["Ativo"])["Nº Contratos"].sum().reset_index()
     # df_bovespa_total = df.groupby(["Ativo"])["Valor Financeiro"].sum().reset_index()
