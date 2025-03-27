@@ -100,7 +100,7 @@ if uploaded_file is not None:
         st.altair_chart(final_chart, use_container_width=True)    
 
     with col2:
-        mes = st.selectbox("Selecione o Mês", ["Todos"]+df["Número do Mês"].unique().tolist(), key="mes")
+        mes = st.selectbox("Selecione o Mês", ["Todos"]+df_ranking["Número do Mês"].unique().tolist(), key="mes")
         if mes == "Todos":
             df_ranking = df_ranking.groupby("Corretora")[df_ranking.columns[2]].sum().reset_index().sort_values(by=df_ranking.columns[2], ascending=False)
         else:
